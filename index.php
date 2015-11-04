@@ -16,10 +16,10 @@
 		<div class="help-block with-errors"></div>
 	</div>
 	<div class="form-group">
-		<label for="txtTel">Telephone</label>
-		<input id="txtTel" name="txtTel" type="text" class="form-control" placeholder="Your number" data-error="Please provide a telephone number" required />
-		<div class="help-block with-errors"></div>
-	</div>
+    <label for="txtEmail">Email Address</label>
+    <input id="txtEmail" name="txtEmail" type="email" pattern="[^ @]*@[^ @]*" class="form-control" placeholder="Your email address" data-error="Please provide a valid email address" required />
+    <div class="help-block with-errors"></div>
+  </div>
 	<div class="form-group">
 		<label for="txtEnquiry">Enquiry</label>
 		<input id="txtEnquiry" name="txtEnquiry" type="text" class="form-control" placeholder="Your message" data-error="Please provide a message" required />
@@ -43,7 +43,7 @@
           //then post
           post_data = {
               'txtName' : $('input[name=txtName]').val(),
-              'txtTel' : $('input[name=txtTel]').val(),
+              'txtEmail' : $('input[name=txtEmail]').val(),
               'txtEnquiry' : $('input[name=txtEnquiry]').val()
           };
          

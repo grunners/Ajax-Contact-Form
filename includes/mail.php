@@ -1,10 +1,10 @@
 <?php
 if($_POST)
 {
-   	//set company variables
-	$companyname = "Company Name";
-	$companyemail = "info@company.com";
-    //*********************************
+    //set company variables
+    $companyname = "Company Name";
+    $companyemail = "info@companyname.co.uk";
+    $subject = "Contact Request";
 
     //check if its an ajax request, exit if not
     if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
@@ -18,33 +18,33 @@ if($_POST)
    
     //Sanitize input data using PHP filter_var().
     //Name
-	if (isset($_POST["txtName"])) {
-		$Name = filter_var($_POST["txtName"], FILTER_SANITIZE_STRING);
-		} else {
-		$Name = "emp";
-	}
+    if (isset($_POST["txtName"])) {
+        $Name = filter_var($_POST["txtName"], FILTER_SANITIZE_STRING);
+        } else {
+        $Name = "emp";
+    }
 
-	//Telephone
-	if (isset($_POST["txtTel"])) {
-		$Tel = filter_var($_POST["txtTel"], FILTER_SANITIZE_STRING);
-		} else {
-		$Tel = "";
-	}
+    //Email
+    if (isset($_POST["txtEmail"])) {
+        $Email = filter_var($_POST["txtEmail"], FILTER_SANITIZE_EMAIL);
+        } else {
+        $Email = "emp";
+    }
 
-	//Enquiry
-	if (isset($_POST["txtEnquiry"])) {
-		$Enquiry = filter_var($_POST["txtEnquiry"], FILTER_SANITIZE_STRING);
-		} else {
-		$Enquiry = "message";
-	}
+    //Enquiry
+    if (isset($_POST["txtEnquiry"])) {
+        $Enquiry = filter_var($_POST["txtEnquiry"], FILTER_SANITIZE_STRING);
+        } else {
+        $Enquiry = "message";
+    }
    
     //additional php validation
     if(strlen($Name)<4){ // If length is less than 4 it will output JSON error.
         $output = json_encode(array('type'=>'error', 'text' => 'Name is too short or empty'));
         die($output);
     }
-    if(strlen($Tel)<7){ // If length is less than 7 it will output JSON error.
-        $output = json_encode(array('type'=>'error', 'text' => 'Please enter a valid phone number'));
+    if(strlen($Email)<5){ // If length is less than 5 it will output JSON error.
+        $output = json_encode(array('type'=>'error', 'text' => 'Please enter a valid email address0'));
         die($output);
     }
     if(strlen($Enquiry)<3){ //check empty message
@@ -53,15 +53,15 @@ if($_POST)
     }
    
     //email body
-    $message_body = $Enquiry."\r\n\r\n-".$Name."\r\n<br>Tel: ".$Tel ;
-   
+    $message_body = $Enquiry."\r\n\r\n-".$Name."\r\n<br>Email: ".$Email;
+
     //proceed with PHP email.
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=iso-8859-1" . "\r\n";
     $headers .= "From: " . $companyname . " <" . $companyemail . ">" . "\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
    
-    $send_mail = mail("recipient@company.com", $subject, $message_body, $headers);
+    $send_mail = mail($companyemail, $subject, $message_body, $headers);
    
     if(!$send_mail)
     {
@@ -70,6 +70,7 @@ if($_POST)
         die($output);
     }
     else {
+        //$output = json_encode(array('type'=>'message', 'text' => 'Thank you for your enquiry, we will be in touch as soon as possible.'));
         $output = json_encode(array('type'=>'message', 'text' => 'Thank you for your enquiry, we will be in touch as soon as possible.'));
         die($output);
     }
