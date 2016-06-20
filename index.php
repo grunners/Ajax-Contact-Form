@@ -33,6 +33,7 @@
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="/js/validator.js"></script>
 <script type="text/javascript">
+// serialize this bit
     $(document).ready(function() {
     	$('#form').validator().on('submit', function (e) {
         
