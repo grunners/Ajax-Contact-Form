@@ -15,6 +15,8 @@ if($_POST)
         "name" => $posted['txtName'],
         "email" => $posted['txtEmail'],
         "tel" => $posted['txtTel'],
+        "account" => $posted['txtAccount'],
+        "category" => $posted['listCategory'],
         "enquiry" => $posted['txtEnquiry']
     );
 
@@ -23,11 +25,13 @@ if($_POST)
         $name = ($response_array["name"]);
         $email = ($response_array["email"]);
         $tel = ($response_array["tel"]);
+        $account = ($response_array["account"]);
+        $category = ($response_array["category"]);
         $enquiry = ($response_array["enquiry"]);
         
 
         //email body
-        $message_body = $enquiry."\r\n\r\n-".$name."\r\n<br>Email: ".$email;
+        $message_body = $enquiry."\r\n\r\n-".$name."\r\n<br>Email: ".$email."\r\n<br>Telephone: ".$tel."\r\n<br>Account Number: ".$account."\r\n<br>Category: ".$category."\r\n<br>Enquiry: ".$enquiry."\r\n";
 
         //proceed with PHP email.
         $headers = "MIME-Version: 1.0" . "\r\n";
@@ -39,15 +43,12 @@ if($_POST)
        
         if(!$send_mail)
         {
-            //If mail couldn't be sent output error. Check your PHP email configuration (if it ever happens)
-            $response_array['message'] = "There was a problem sending your contact request - please try again.";
             $response_array["status"] = "error";
-            //die($response_array);
+            $response_array['message'] = "There was a problem sending your contact request - please try again.";
         }
         else {
-            $response_array['message'] = "Thank you for your enquiry, we will be in touch as soon as possible.";
             $response_array["status"] = "success";
-            //die($response_array['message']);
+            $response_array['message'] = "Thank you for your enquiry, we will be in touch as soon as possible.";
         }
     }
     catch(Exception $e) {
