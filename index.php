@@ -15,6 +15,11 @@
 		<input id="txtName" name="txtName" type="text" class="form-control" placeholder="Your name" data-error="Please provide your name" required />
 		<div class="help-block with-errors"></div>
 	</div>
+  <div class="form-group">
+    <label for="txtEmail">Email</label>
+    <input id="txtEmail" name="txtEmail" type="text" class="form-control" placeholder="Your number" data-error="Please provide an email address" required />
+    <div class="help-block with-errors"></div>
+  </div>
 	<div class="form-group">
 		<label for="txtTel">Telephone</label>
 		<input id="txtTel" name="txtTel" type="text" class="form-control" placeholder="Your number" data-error="Please provide a telephone number" required />
@@ -35,31 +40,32 @@
 <script type="text/javascript">
 // serialize this bit
     $(document).ready(function() {
-    	$('#form').validator().on('submit', function (e) {
-        
-        if (!e.isDefaultPrevented()) {
+      $('#form').on('submit', function (e) {
+        e.preventDefault();
+        //var btn = $(this).attr('id');
+        $.ajax({
+            url: '/includes/mail.php',
+            type: 'POST',
+            data: { 
+              param: $('#form').serialize()        
+            },
+            //dataType: 'json', //not needed if header type is given in php
 
-          //disable default behaviour first
-          e.preventDefault();
-          //then post
-          post_data = {
-              'txtName' : $('input[name=txtName]').val(),
-              'txtTel' : $('input[name=txtTel]').val(),
-              'txtEnquiry' : $('input[name=txtEnquiry]').val()
-          };
-         
-          //Ajax post data to server
-          $.post('/includes/mail.php', post_data, function(response){  
-              if(response.type == 'error'){ //load json data from server and output message    
-                  output = '<div class="alert alert-danger">' + response.text + '</div>';
-              }else{
-                  output = '<div class="alert alert-success">' + response.text + '</div>';
-                  //disable the submit button
-                  $('#btnSubmit').attr('disabled','disabled');
+            //valid json response
+            success: function(data) {
+              //alert(data);
+              if (data.status == "success") {
+                alert(data.message);
               }
-              $("#form #contact-results").hide().html(output).fadeIn();
-          }, 'json');
-        }
+              else {
+                alert(data.message);
+              }
+            },
+            //invalid json response
+            error: function(data) {
+              alert("error - http code: " + data.status);
+            }
+        });
       });
     });
 </script>

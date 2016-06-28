@@ -1,77 +1,63 @@
 <?php
+
+//set the header type - required for json response
+header('Content-Type: application/json');
+
 if($_POST)
 {
-   	//set company variables
-	$companyname = "Company Name";
-	$companyemail = "info@company.com";
-    //*********************************
+    //set company variables
+    $companyname = "Cash4UNow";
+    $companyemail = "adrian@novacontracting.co.uk";
+    $subject = "Contact Request";
 
-    //check if its an ajax request, exit if not
-    if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+    parse_str($_REQUEST['param'], $posted);
+    $response_array = array(
+        "name" => $posted['txtName'],
+        "email" => $posted['txtEmail'],
+        "tel" => $posted['txtTel'],
+        "enquiry" => $posted['txtEnquiry']
+    );
+
+    //send mail
+    try {
+        $name = ($response_array["name"]);
+        $email = ($response_array["email"]);
+        $tel = ($response_array["tel"]);
+        $enquiry = ($response_array["enquiry"]);
+        
+
+        //email body
+        $message_body = $enquiry."\r\n\r\n-".$name."\r\n<br>Email: ".$email;
+
+        //proceed with PHP email.
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=iso-8859-1" . "\r\n";
+        $headers .= "From: " . $companyname . " <" . $companyemail . ">" . "\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
        
-        $output = json_encode(array( //create JSON data
-            'type'=>'error',
-            'text' => 'Sorry Request must be Ajax POST'
-        ));
-        die($output); //exit script outputting json data
+        $send_mail = mail($companyemail, $subject, $message_body, $headers);
+       
+        if(!$send_mail)
+        {
+            //If mail couldn't be sent output error. Check your PHP email configuration (if it ever happens)
+            $response_array['message'] = "There was a problem sending your contact request - please try again.";
+            $response_array["status"] = "error";
+            //die($response_array);
+        }
+        else {
+            $response_array['message'] = "Thank you for your enquiry, we will be in touch as soon as possible.";
+            $response_array["status"] = "success";
+            //die($response_array['message']);
+        }
     }
-   
-    //Sanitize input data using PHP filter_var().
-    //Name
-	if (isset($_POST["txtName"])) {
-		$Name = filter_var($_POST["txtName"], FILTER_SANITIZE_STRING);
-		} else {
-		$Name = "emp";
-	}
+    catch(Exception $e) {
+        $response_array['message'] = "There was a problem sending your contact request - please try again.";
+        $response_array["status"] = "error";
+    }
 
-	//Telephone
-	if (isset($_POST["txtTel"])) {
-		$Tel = filter_var($_POST["txtTel"], FILTER_SANITIZE_STRING);
-		} else {
-		$Tel = "";
-	}
-
-	//Enquiry
-	if (isset($_POST["txtEnquiry"])) {
-		$Enquiry = filter_var($_POST["txtEnquiry"], FILTER_SANITIZE_STRING);
-		} else {
-		$Enquiry = "message";
-	}
-   
-    //additional php validation
-    if(strlen($Name)<4){ // If length is less than 4 it will output JSON error.
-        $output = json_encode(array('type'=>'error', 'text' => 'Name is too short or empty'));
-        die($output);
-    }
-    if(strlen($Tel)<7){ // If length is less than 7 it will output JSON error.
-        $output = json_encode(array('type'=>'error', 'text' => 'Please enter a valid phone number'));
-        die($output);
-    }
-    if(strlen($Enquiry)<3){ //check empty message
-        $output = json_encode(array('type'=>'error', 'text' => 'Please provide more information regarding your enquiry'));
-        die($output);
-    }
-   
-    //email body
-    $message_body = $Enquiry."\r\n\r\n-".$Name."\r\n<br>Tel: ".$Tel ;
-   
-    //proceed with PHP email.
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=iso-8859-1" . "\r\n";
-    $headers .= "From: " . $companyname . " <" . $companyemail . ">" . "\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
-   
-    $send_mail = mail("recipient@company.com", $subject, $message_body, $headers);
-   
-    if(!$send_mail)
-    {
-        //If mail couldn't be sent output error. Check your PHP email configuration (if it ever happens)
-        $output = json_encode(array('type'=>'error', 'text' => 'Could not send mail! Please check your PHP mail configuration.'));
-        die($output);
-    }
-    else {
-        $output = json_encode(array('type'=>'message', 'text' => 'Thank you for your enquiry, we will be in touch as soon as possible.'));
-        die($output);
+    //echo array back to the form
+    if (isset($response_array)) {
+        echo json_encode($response_array);
     }
 }
 ?>
