@@ -16,7 +16,7 @@
 	</div>
   <div class="form-group">
     <label for="txtEmail">Your email address</label>
-    <input id="txtEmail" name="txtEmail" type="text" class="form-control" data-error="Please provide an email address" required />
+    <input id="txtEmail" name="txtEmail" type="email" class="form-control" data-error="Please provide an email address" required />
     <div class="help-block with-errors"></div>
   </div>
 	<div class="form-group">
