@@ -6,7 +6,9 @@
 
 <body>
 
-<form id="form" data-toggle="validator" role="form" data-disable="false">
+<p id="contact_results"></p>
+
+<form id="contactform" data-toggle="validator" role="form" data-disable="false">
 	<h3>Get In Touch</h3>
 	<p class="centerText">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
 	<div class="form-group">
@@ -33,8 +35,12 @@
     <label for="listCategory">Please select what your enquiry is about from the following list. This will ensure your enquiry is dealt with by the correct department.</label>
     <select id="listCategory" class="listCategory" name="listCategory">
       <option selected="selected" value="info#No category selected#0">Select a category...</option>
-      <option value="message1">message1</option>
-      <option value="message2">message2</option>
+      <option value="1">I cannot afford to repay any of my loan on time</option>
+      <option value="2">I can only make a partial payment towards my loan</option>
+      <option value="3">I would like to apply for another loan with you</option>
+      <option value="4">I would like to make a complaint</option>
+      <option value="5">I would like to apply to cancel the Continuous Payment Authority</option>
+      <option value="6">Other</option>
     </select>
     <div class="help-block with-errors"></div>
   </div>
@@ -44,34 +50,33 @@
 		<div class="help-block with-errors"></div>
 	</div>
 	<button type="submit" class="btn btn-primary" name="btnSubmit" id="btnSubmit" >Submit</button>
-	<div id="contact-results"></div>
 </form>
 
 <!-- include jquery -->
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="/js/validator.js"></script>
 <script type="text/javascript">
-// serialize this bit
     $(document).ready(function() {
-      $('#form').on('submit', function (e) {
+      $('#contactform').on('submit', function (e) {
         e.preventDefault();
         //var btn = $(this).attr('id');
         $.ajax({
             url: '/includes/mail.php',
             type: 'POST',
             data: { 
-              param: $('#form').serialize()        
+              param: $('#contactform').serialize()        
             },
-            //dataType: 'json', //not needed if header type is given in php
 
             //valid json response
             success: function(data) {
               //alert(data);
               if (data.status == "success") {
-                alert(data.message);
+                $('#contact_info').addClass('bg-success');
+                $('#contact_info').html(data.message);
               }
               else {
-                alert(data.message);
+                $('#contact_info').addClass('bg-danger');
+                $('#contact_info').html(data.message);
               }
             },
             //invalid json response

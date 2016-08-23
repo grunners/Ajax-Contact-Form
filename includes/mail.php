@@ -60,11 +60,39 @@ if($_POST)
     }
     else
     {
+        //switch category
+        $usermessage = "Thank you for your enquiry.<br>";
+        switch ($response_array["category"]) {
+            case "1":
+                $chosen_option = "I cannot afford to repay any of my loan on time";
+                $usermessage .= "Please contact one of our advisers on 0113 887 3434 to discuss a repayment arrangement.  We want to help you if you are experiencing financial difficulties and can come to an arrangement you can afford to repay.";
+                break;
+            case "2":
+                $chosen_option = "I can only make a partial payment towards my loan";
+                $usermessage .= "Please contact one of our advisers on 0113 887 3434 to discuss a repayment arrangement.  We want to help you if you are experiencing financial difficulties and can come to an arrangement you can afford to repay.";
+                break;
+            case "3":
+                $chosen_option = "I would like to apply for another loan with you";
+                $usermessage .= "We welcome applications from our customers who have had a successfully completed loan in the past and we may be in a position to offer you a little bit more money than last time if you repaid your instalment/s on time.  Please contact one of our advisers on 0113 887 3434 who will start the process for you.";
+                break;
+            case "4":
+                $chosen_option = "I would like to make a complaint";
+                $usermessage .= "Please <a href='/complaints' title='CASH4UNOW.CO.UK Complaints'>click here</a> to be taken to the complaints page of our website.";
+                break;
+            case "5":
+                $chosen_option = "I would like to apply to cancel the Continuous Payment Authority";
+                $usermessage .= "We will respond to your enquiry as soon as possible.";
+                break;
+            default: 
+                $chosen_option = "Other";
+                $usermessage .= "We will respond to your enquiry as soon as possible.";
+                break;
+        }
         //send mail
         try {
 
             //email body
-            $message_body = $name."\r\n<br>Email: ".$email."\r\n<br>Telephone: ".$tel."\r\n<br>Account Number: ".$account."\r\n<br>Category: ".$category."\r\n<br>Enquiry: ".$enquiry."\r\n";
+            $message_body = $name."\r\n<br>Email: ".$email."\r\n<br>Telephone: ".$tel."\r\n<br>Account Number: ".$account."\r\n<br>Category: ".$chosen_option."\r\n<br>Enquiry: ".$enquiry."\r\n";
 
             //proceed with PHP email.
             $headers = "MIME-Version: 1.0" . "\r\n";
@@ -81,7 +109,7 @@ if($_POST)
             }
             else {
                 $response_array["status"] = "success";
-                $response_array['message'] = "Thank you for your enquiry, we will be in touch as soon as possible.";
+                $response_array['message'] = $usermessage;
             }
         }
         catch(Exception $e) {
